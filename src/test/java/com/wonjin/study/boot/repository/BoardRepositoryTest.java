@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Collection;
+
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -49,5 +51,59 @@ public class BoardRepositoryTest {
         System.out.println("Delete Entity...");
 
         boardRepository.deleteById(1L);
+    }
+
+    // 200개 튜플 생성
+    @Test
+    public void testInsert200() {
+        for (int i = 1; i <= 200; i++) {
+            Board board = new Board();
+            board.setTitle("제목.." + i);
+            board.setContent("내용.." + i);
+            board.setWriter("user0" + (i % 20));
+            boardRepository.save(board);
+        }
+    }
+
+    @Test
+    public void testByTitle() {
+        boardRepository.findBoardByTitle("제목..177")
+                .forEach(board -> System.out.println(board));
+    }
+
+    @Test
+    public void testByWriter() {
+        Collection<Board> results = boardRepository.findByWriter("user00");
+
+        results.forEach(
+                board -> System.out.println(board)
+        );
+    }
+
+    @Test
+    public void testByWriterContaining() {
+        Collection<Board> results = boardRepository.findByWriterContaining("05");
+
+        results.forEach(
+                board -> System.out.println(board)
+        );
+    }
+
+    @Test
+    public void testByTitleAndBno() {
+        Collection<Board> results = boardRepository.findByTitleContainingAndBnoGreaterThan("5", 50L);
+
+        results.forEach(
+                board -> System.out.println(board)
+        );
+    }
+
+    @Test
+    public void testBnoOrderBy() {
+        Collection<Board> results = boardRepository.findByBnoGreaterThanOrderByBnoDesc(90L);
+
+        results.forEach(
+                board -> System.out.println(board)
+        );
     }
 }
