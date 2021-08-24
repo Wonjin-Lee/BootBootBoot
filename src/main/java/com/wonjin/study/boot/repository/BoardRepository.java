@@ -1,6 +1,8 @@
 package com.wonjin.study.boot.repository;
 
 import com.wonjin.study.boot.domain.Board;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Collection;
@@ -13,4 +15,6 @@ public interface BoardRepository extends CrudRepository<Board, Long> {
     Collection<Board> findByTitleContainingOrContentContaining(String title, String content);
     Collection<Board> findByTitleContainingAndBnoGreaterThan(String keyword, Long num);
     Collection<Board> findByBnoGreaterThanOrderByBnoDesc(Long bno);
+    List<Board> findByBnoGreaterThanOrderByBnoDesc(Long bno, Pageable paging);
+    Page<Board> findByBnoGreaterThan(Long bno, Pageable paging);
 }

@@ -5,9 +5,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -105,5 +110,32 @@ public class BoardRepositoryTest {
         results.forEach(
                 board -> System.out.println(board)
         );
+    }
+
+    @Test
+    public void testBnoOrderByPaging() {
+        Pageable paging = PageRequest.of(0, 10);
+
+        Collection<Board> results = boardRepository.findByBnoGreaterThanOrderByBnoDesc(0L, paging);
+
+        results.forEach(
+                board -> System.out.println(board)
+        );
+    }
+
+    @Test
+    public void testBnoPagingSort() {
+        Pageable paging = PageRequest.of(0, 10, Sort.Direction.ASC, "bno");
+
+        Page<Board> result = boardRepository.findByBnoGreaterThan(0L, paging);
+
+        System.out.println("PAGE SIZE : " + result.getSize());
+        System.out.println("TOTAL PAGES : " + result.getTotalPages());
+        System.out.println("TOTAL COUNT : " + result.getTotalElements());
+        System.out.println("NEXT : " + result.nextPageable());
+
+        List<Board> list = result.getContent();
+
+        list.forEach(board -> System.out.println(board));
     }
 }
