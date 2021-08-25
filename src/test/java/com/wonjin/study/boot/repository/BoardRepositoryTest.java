@@ -138,4 +138,9 @@ public class BoardRepositoryTest {
 
         list.forEach(board -> System.out.println(board));
     }
+
+    @Test
+    public void testByTitle2() {
+        boardRepository.findByTitle("17").forEach(board -> System.out.println(board));
+    }
 }
