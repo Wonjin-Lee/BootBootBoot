@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -142,5 +143,17 @@ public class BoardRepositoryTest {
     @Test
     public void testByTitle2() {
         boardRepository.findByTitle("17").forEach(board -> System.out.println(board));
+    }
+
+    @Test
+    public void testByTitle17() {
+        boardRepository.findByTitle2("17").forEach(arr -> System.out.println(Arrays.toString(arr)));
+    }
+
+    @Test
+    public void testByPaging() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        boardRepository.findByPage(pageable).forEach(board -> System.out.println(board));
     }
 }
