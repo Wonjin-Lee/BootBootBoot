@@ -23,5 +23,6 @@ public class Profile {
 
     private boolean current;
 
+@ManyToOne
     private Member member;
 }
