@@ -7,7 +7,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
@@ -16,6 +18,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Log
+@Commit
 public class PDSBoardRepositoryTest {
     @Autowired
     PDSBoardRepository repo;
@@ -36,5 +39,15 @@ public class PDSBoardRepositoryTest {
         log.info("try to save pds");
 
         repo.save(pds);
+    }
+
+    @Transactional
+    @Test
+    public void testUpdateFileName1() {
+        Long fno = 1L;
+        String newName = "updateFile1.doc";
+
+        int count = repo.updatePDSFile(fno, newName);
+        log.info("update count : " + count);
     }
 }
