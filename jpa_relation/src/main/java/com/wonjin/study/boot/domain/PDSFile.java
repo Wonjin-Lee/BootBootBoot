@@ -9,20 +9,13 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString(exclude = "member")
+@ToString
 @Entity
-@Table(name = "tb1_profile")
-@EqualsAndHashCode(of = "fname")
-public class Profile {
-
+@Table(name = "tb1_pdsfiles")
+@EqualsAndHashCode(of = "fno")
+public class PDSFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fno;
-
-    private String fname;
-
-    private boolean current;
-
-    @ManyToOne
-    private Member member;
+    private String pdsfile;
 }
