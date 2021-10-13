@@ -79,4 +79,15 @@ public class PDSBoardRepositoryTest {
             repo.save(pds);
         });
     }
+
+    @Transactional
+    @Test
+    public void deletePDSFile() {
+        // 첨부 파일 번호
+        Long fno = 2L;
+
+        int count = repo.deletePDSFile(fno);
+
+        log.info("DELETE PDSFILE : " + count);
+    }
 }
