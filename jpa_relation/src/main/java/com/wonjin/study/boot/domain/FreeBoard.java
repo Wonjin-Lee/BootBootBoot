@@ -9,10 +9,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "replies")
 @Entity
 @Table(name = "tb1_freeboards")
 @EqualsAndHashCode(of = "bno")
@@ -24,7 +25,7 @@ public class FreeBoard {
     private String writer;
     private String content;
 
-    @OneToMany
+    @OneToMany(mappedBy = "board")
     private List<FreeBoardReply> replies;
 
     @CreationTimestamp
