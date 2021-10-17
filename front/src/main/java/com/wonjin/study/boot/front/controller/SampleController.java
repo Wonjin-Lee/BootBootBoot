@@ -34,4 +34,29 @@ public class SampleController {
 
         model.addAttribute("memberList", memberList);
     }
+
+    @GetMapping("/sample4")
+    public void sample4(Model model) {
+        List<MemberVO> memberList = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            memberList.add(new MemberVO(i, "u000" + i % 3, "p0000" + i % 3, "이원진" + i, new Timestamp(System.currentTimeMillis())));
+        }
+
+        model.addAttribute("memberList", memberList);
+    }
+
+    @GetMapping("/sample6")
+    public void sample6(Model model) {
+        List<MemberVO> memberList = new ArrayList<>();
+
+        IntStream.rangeClosed(0, 10).forEach(i -> {
+            memberList.add(new MemberVO(i, "u0" + i, "p0" + i, "이원진" + i, new Timestamp(System.currentTimeMillis())));
+        });
+
+        model.addAttribute("memberList", memberList);
+
+        String result = "SUCCESS";
+        model.addAttribute("result", result);
+    }
 }
