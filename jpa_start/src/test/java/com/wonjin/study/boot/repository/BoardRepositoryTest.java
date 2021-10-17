@@ -1,6 +1,8 @@
 package com.wonjin.study.boot.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.wonjin.study.boot.domain.Board;
+import com.wonjin.study.boot.domain.QBoard;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,5 +157,35 @@ public class BoardRepositoryTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         boardRepository.findByPage(pageable).forEach(board -> System.out.println(board));
+    }
+
+    @Test
+    public void testPredicate() {
+        String type = "t";
+        String keyword = "17";
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        QBoard board = QBoard.board;
+
+        if (type.equals("t")) {
+            builder.and(board.title.like("%" + keyword + "%"));
+        }
+
+        // bno > 0
+        builder.and(board.bno.gt(0L));
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<Board> result = boardRepository.findAll(builder, pageable);
+
+        System.out.println("Page Size : " + result.getSize());
+        System.out.println("Total Pages : " + result.getTotalPages());
+        System.out.println("Total Count : " + result.getTotalElements());
+        System.out.println("Next : " + result.nextPageable());
+
+        List<Board> list = result.getContent();
+
+        list.forEach(b -> System.out.println(b));
     }
 }
