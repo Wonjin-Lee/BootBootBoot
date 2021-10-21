@@ -2,6 +2,7 @@ package com.wonjin.study.boot.board.controller;
 
 import com.wonjin.study.boot.board.domain.WebBoard;
 import com.wonjin.study.boot.board.repository.WebBoardRepository;
+import com.wonjin.study.boot.board.vo.PageMaker;
 import com.wonjin.study.boot.board.vo.PageVO;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class WebBoardController {
         log.info("" + pageable);
         log.info("" + result);
 
-        model.addAttribute("result", result);
+        log.info("Total Page Number : " + result.getTotalPages());
+        model.addAttribute("result", new PageMaker<>(result));
     }
 }
