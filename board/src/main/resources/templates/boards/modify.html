@@ -53,6 +53,13 @@
         $(document).ready(function () {
             var formObj = $("#f1");
 
+            $(".modbtn").click(function () {
+                formObj.attr("action", "modify");
+                formObj.attr("method", "post");
+
+                formObj.submit();
+            })
+
             $(".delbtn").click(function () {
                 formObj.attr("action", "delete");
                 formObj.attr("method", "post");

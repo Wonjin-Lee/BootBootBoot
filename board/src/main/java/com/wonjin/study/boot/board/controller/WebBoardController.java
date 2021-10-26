@@ -65,6 +65,27 @@ public class WebBoardController {
         webBoardRepository.findById(bno).ifPresent(board -> model.addAttribute("vo", board));
     }
 
+    @PostMapping("/modify")
+    public String modifyPost(WebBoard board, PageVO vo, RedirectAttributes rttr) {
+        log.info("Modify WebBoard : " + board);
+
+        webBoardRepository.findById(board.getBno()).ifPresent(origin -> {
+            origin.setTitle(board.getTitle());
+            origin.setContent(board.getContent());
+
+            webBoardRepository.save(origin);
+            rttr.addFlashAttribute("msg", "success");
+            rttr.addAttribute("bno", origin.getBno());
+        });
+
+        rttr.addAttribute("page", vo.getPage());
+        rttr.addAttribute("size", vo.getSize());
+        rttr.addAttribute("type", vo.getType());
+        rttr.addAttribute("keyword", vo.getKeyword());
+
+        return "redirect:/boards/view";
+    }
+
     @PostMapping("/delete")
     public String delete(Long bno, PageVO vo, RedirectAttributes rttr) {
         log.info("Delete Board No : " + bno);
