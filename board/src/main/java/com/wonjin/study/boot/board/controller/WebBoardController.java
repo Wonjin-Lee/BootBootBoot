@@ -43,12 +43,12 @@ public class WebBoardController {
     }
 
     @PostMapping("/register")
-    public String registerPOST(@ModelAttribute("vo") WebBoard vo, RedirectAttributes redirectAttributes) {
+    public String registerPOST(@ModelAttribute("vo") WebBoard vo, RedirectAttributes rttr) {
         log.info("register post");
         log.info("" + vo);
 
         webBoardRepository.save(vo);
-        redirectAttributes.addFlashAttribute("msg", "success");
+        rttr.addFlashAttribute("msg", "success");
 
         return "redirect:/boards/list";
     }
@@ -63,5 +63,18 @@ public class WebBoardController {
     public void modify(Long bno, @ModelAttribute("pageVO") PageVO vo, Model model) {
         log.info("Modify Board No : " + bno);
         webBoardRepository.findById(bno).ifPresent(board -> model.addAttribute("vo", board));
+    }
+
+    @PostMapping("/delete")
+    public String delete(Long bno, PageVO vo, RedirectAttributes rttr) {
+        log.info("Delete Board No : " + bno);
+        webBoardRepository.deleteById(bno);
+        rttr.addFlashAttribute("msg", "success");
+        rttr.addAttribute("page", vo.getPage());
+        rttr.addAttribute("size", vo.getSize());
+        rttr.addAttribute("type", vo.getType());
+        rttr.addAttribute("keyword", vo.getKeyword());
+
+        return "redirect:/boards/list";
     }
 }
