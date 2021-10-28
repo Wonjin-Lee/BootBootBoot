@@ -36,6 +36,45 @@ public class WebReplyController {
         return new ResponseEntity<>(getListByBoard(board), HttpStatus.CREATED);
     }
 
+    @Transactional
+    @DeleteMapping("/{bno}/{rno}")
+    public ResponseEntity<List<WebReply>> remove(@PathVariable("bno") Long bno, @PathVariable("rno") Long rno) {
+        log.info("Delete Reply : " + rno);
+
+        replyRepository.deleteById(rno);
+
+        WebBoard board = new WebBoard();
+        board.setBno(bno);
+
+        return new ResponseEntity<>(getListByBoard(board), HttpStatus.OK);
+    }
+
+    @Transactional
+    @PutMapping("/{bno}")
+    public ResponseEntity<List<WebReply>> modify(@PathVariable("bno") Long bno, @RequestBody WebReply reply) {
+        log.info("Modify Reply : " + reply);
+
+        replyRepository.findById(reply.getRno()).ifPresent(origin -> {
+            origin.setReplyText(reply.getReplyText());
+            replyRepository.save(origin);
+        });
+
+        WebBoard board = new WebBoard();
+        board.setBno(bno);
+
+        return new ResponseEntity<>(getListByBoard(board), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{bno}")
+    public ResponseEntity<List<WebReply>> getReplies(@PathVariable("bno") Long bno) {
+        log.info("Get All Replies...");
+
+        WebBoard board = new WebBoard();
+        board.setBno(bno);
+
+        return new ResponseEntity<>(getListByBoard(board), HttpStatus.OK);
+    }
+
     private List<WebReply> getListByBoard(WebBoard board) throws RuntimeException {
         log.info("getListByBoard..." + board);
         return replyRepository.getRepliesOfBoard(board);
