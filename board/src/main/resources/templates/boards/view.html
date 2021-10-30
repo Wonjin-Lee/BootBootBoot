@@ -53,9 +53,9 @@
     <script th:inline="javascript">
         $(document).ready(function (e) {
             // load replies
-            replyManager.getAll([[${vo.bno}]], function (list) {
-                console.log("List : " + list);
-            });
+            (function () {
+                replyManager.getAll([[${vo.bno}]], printList);
+            })();
 
             function printList(list) {
                 var str = "";
