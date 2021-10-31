@@ -32,6 +32,7 @@
             <a th:href="@{list(page=${pageVO.page}, size=${pageVO.size}, type=${pageVO.type}, keyword=${pageVO.keyword}, bno=${vo.bno})}" class="btn btn-primary">Go List</a>
         </div>
     </div>
+
     <div class="container">
         <table class="table table-striped table-bordered table-hover">
             <thead>
@@ -44,7 +45,35 @@
             </thead>
             <tbody id="replyTable"></tbody>
         </table>
+
+        <div class="pull-right">
+            <button class="btn" id="addReplyBtn">Add Reply</button>
+        </div>
     </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal Content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <label>Reply Text</label>
+                    <input type="text" class="form-control" name="replyText">
+                    <label>Replyer</label>
+                    <input type="text" class="form-control" name="replyer">
+                </div>
+                <div class="modal-footer">
+                    <button id="modalBtn" class="btn btn-info">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end Modal -->
 </div>
 <!-- end fragment -->
 
@@ -52,6 +81,41 @@
     <script th:inline="javascript" th:src="@{'/js/reply.js'}"></script>
     <script th:inline="javascript">
         $(document).ready(function (e) {
+            var mode;
+
+            var bno = [[${vo.bno}]];
+
+            var replyTextObj = $("input[name='replyText']");
+            var replyerObj = $("input[name='replyer']");
+
+            $("#modalBtn").click(function () {
+                if (mode == "ADD") {
+                    var replyText = replyTextObj.val();
+                    var replyer = replyerObj.val();
+
+                    var obj = {
+                        replyText : replyText,
+                        replyer : replyer,
+                        bno : bno
+                    };
+
+                    replyManager.add(obj, function (list) {
+                        printList(list);
+                        alert("새로운 댓글이 추가되었습니다.");
+                        $("#myModal").modal("hide");
+                        replyTextObj.val("");
+                        replyerObj.val("");
+                    });
+                }
+            });
+
+            $("#addReplyBtn").on("click", function () {
+                $("#myModal").modal("show");
+                $(".modal-title").text("Add Reply");
+
+                mode = "ADD";
+            });
+
             // load replies
             (function () {
                 replyManager.getAll([[${vo.bno}]], printList);

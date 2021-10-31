@@ -6,6 +6,15 @@ var replyManager = (function () {
 
   var add = function (obj, callback) {
     console.log("Add...");
+
+    $.ajax({
+      type : "post",
+      url : "/replies/" + obj.bno,
+      data : JSON.stringify(obj),
+      dataType : "json",
+      contentType : "application/json",
+      success : callback
+    });
   };
 
   var update = function (obj, callback) {
