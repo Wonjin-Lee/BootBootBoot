@@ -92,10 +92,10 @@
             var rno;
 
             $("#modalBtn").click(function () {
-                if (mode == "ADD") {
-                    var replyText = replyTextObj.val();
-                    var replyer = replyerObj.val();
+                var replyText = replyTextObj.val();
+                var replyer = replyerObj.val();
 
+                if (mode == "ADD") {
                     var obj = {
                         replyText : replyText,
                         replyer : replyer,
@@ -103,13 +103,36 @@
                     };
 
                     replyManager.add(obj, function (list) {
-                        printList(list);
                         alert("새로운 댓글이 추가되었습니다.");
-                        $("#myModal").modal("hide");
-                        replyTextObj.val("");
-                        replyerObj.val("");
+                        afterAll(list);
+                    });
+                } else if (mode == "MOD") {
+                    var obj = {
+                        replyText : replyText,
+                        bno : bno,
+                        rno : rno
+                    };
+
+                    replyManager.update(obj, function (list) {
+                        alert("댓글이 수정되었습니다.");
+                        afterAll(list);
                     });
                 }
+            });
+
+            $("#replyTable").on("click", "tr", function (e) {
+                var tds = $(this).find("td");
+
+                console.log(tds);
+
+                rno = tds[0].innerHTML;
+                mode = "MOD";
+
+                replyTextObj.val(tds[1].innerHTML);
+                replyerObj.val(tds[2].innerHTML);
+                $("#delModalBtn").show();
+                $("#myModal").modal("show");
+                $(".modal-title").text("Modify/Delete Reply");
             });
 
             $("#addReplyBtn").on("click", function () {
@@ -128,32 +151,22 @@
                 };
 
                 replyManager.remove(obj, function (list) {
-                    printList(list);
                     alert("댓글이 삭제되었습니다.");
-                    $("#myModal").modal("hide");
-                    replyTextObj.val("");
-                    replyerObj.val("");
+                    afterAll(list);
                 });
-            });
-
-            $("#replyTable").on("click", "tr", function (e) {
-                var tds = $(this).find("td");
-
-                console.log(tds);
-
-                rno = tds[0].innerHTML;
-                mode = "MOD";
-
-                replyTextObj.val(tds[1].innerHTML);
-                replyerObj.val(tds[2].innerHTML);
-                $("#myModal").modal("show");
-                $(".modal-title").text("Modify/Delete Reply");
             });
 
             // load replies
             (function () {
                 replyManager.getAll([[${vo.bno}]], printList);
             })();
+
+            function afterAll(list) {
+                printList(list);
+                $("#myModal").modal("hide");
+                replyTextObj.val("");
+                replyerObj.val("");
+            }
 
             function printList(list) {
                 var str = "";
