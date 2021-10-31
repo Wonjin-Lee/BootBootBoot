@@ -67,6 +67,7 @@
                     <input type="text" class="form-control" name="replyer">
                 </div>
                 <div class="modal-footer">
+                    <button id="delModalBtn" class="btn btn-danger">Delete</button>
                     <button id="modalBtn" class="btn btn-info">Save</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
@@ -87,6 +88,8 @@
 
             var replyTextObj = $("input[name='replyText']");
             var replyerObj = $("input[name='replyer']");
+
+            var rno;
 
             $("#modalBtn").click(function () {
                 if (mode == "ADD") {
@@ -113,7 +116,38 @@
                 $("#myModal").modal("show");
                 $(".modal-title").text("Add Reply");
 
+                $("#delModalBtn").hide();
+
                 mode = "ADD";
+            });
+
+            $("#delModalBtn").on("click", function () {
+                var obj = {
+                    bno : bno,
+                    rno : rno
+                };
+
+                replyManager.remove(obj, function (list) {
+                    printList(list);
+                    alert("댓글이 삭제되었습니다.");
+                    $("#myModal").modal("hide");
+                    replyTextObj.val("");
+                    replyerObj.val("");
+                });
+            });
+
+            $("#replyTable").on("click", "tr", function (e) {
+                var tds = $(this).find("td");
+
+                console.log(tds);
+
+                rno = tds[0].innerHTML;
+                mode = "MOD";
+
+                replyTextObj.val(tds[1].innerHTML);
+                replyerObj.val(tds[2].innerHTML);
+                $("#myModal").modal("show");
+                $(".modal-title").text("Modify/Delete Reply");
             });
 
             // load replies
