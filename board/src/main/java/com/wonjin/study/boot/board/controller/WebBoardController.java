@@ -1,6 +1,7 @@
 package com.wonjin.study.boot.board.controller;
 
 import com.wonjin.study.boot.board.domain.WebBoard;
+import com.wonjin.study.boot.board.repository.CustomCrudRepository;
 import com.wonjin.study.boot.board.repository.WebBoardRepository;
 import com.wonjin.study.boot.board.vo.PageMaker;
 import com.wonjin.study.boot.board.vo.PageVO;
@@ -22,18 +23,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class WebBoardController {
 
     @Autowired
-    private WebBoardRepository webBoardRepository;
+    private CustomCrudRepository repository;
 
     @GetMapping("/list")
     public void list(@ModelAttribute("pageVO") PageVO vo, Model model) {
         Pageable pageable = vo.makePageable(0, "bno");
 
-        Page<WebBoard> result = webBoardRepository.findAll(webBoardRepository.makePredicate(vo.getType(), vo.getKeyword()), pageable);
+        Page<Object[]> result = repository.getCustomPage(vo.getType(), vo.getKeyword(), pageable);
 
         log.info("" + pageable);
         log.info("" + result);
 
         log.info("Total Page Number : " + result.getTotalPages());
+
         model.addAttribute("result", new PageMaker<>(result));
     }
 
@@ -47,7 +49,7 @@ public class WebBoardController {
         log.info("register post");
         log.info("" + vo);
 
-        webBoardRepository.save(vo);
+        repository.save(vo);
         rttr.addFlashAttribute("msg", "success");
 
         return "redirect:/boards/list";
@@ -56,24 +58,24 @@ public class WebBoardController {
     @GetMapping("/view")
     public void view(Long bno, @ModelAttribute("pageVO") PageVO vo, Model model) {
         log.info("BoardNo : " + bno);
-        webBoardRepository.findById(bno).ifPresent(board -> model.addAttribute("vo", board));
+        repository.findById(bno).ifPresent(board -> model.addAttribute("vo", board));
     }
 
     @GetMapping("/modify")
     public void modify(Long bno, @ModelAttribute("pageVO") PageVO vo, Model model) {
         log.info("Modify Board No : " + bno);
-        webBoardRepository.findById(bno).ifPresent(board -> model.addAttribute("vo", board));
+        repository.findById(bno).ifPresent(board -> model.addAttribute("vo", board));
     }
 
     @PostMapping("/modify")
     public String modifyPost(WebBoard board, PageVO vo, RedirectAttributes rttr) {
         log.info("Modify WebBoard : " + board);
 
-        webBoardRepository.findById(board.getBno()).ifPresent(origin -> {
+        repository.findById(board.getBno()).ifPresent(origin -> {
             origin.setTitle(board.getTitle());
             origin.setContent(board.getContent());
 
-            webBoardRepository.save(origin);
+            repository.save(origin);
             rttr.addFlashAttribute("msg", "success");
             rttr.addAttribute("bno", origin.getBno());
         });
@@ -89,7 +91,7 @@ public class WebBoardController {
     @PostMapping("/delete")
     public String delete(Long bno, PageVO vo, RedirectAttributes rttr) {
         log.info("Delete Board No : " + bno);
-        webBoardRepository.deleteById(bno);
+        repository.deleteById(bno);
         rttr.addFlashAttribute("msg", "success");
         rttr.addAttribute("page", vo.getPage());
         rttr.addAttribute("size", vo.getSize());
